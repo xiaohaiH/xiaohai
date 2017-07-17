@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	
+</body>
+<script type="text/javascript">
+var i = 0;
+var timer = "";
+function time(x){
+	if(x){
+		clearInterval(timer);
+		return;
+	};
+	timer = setInterval(function(){
+		i++;
+		document.body.innerHTML = i;
+	},1000);
+};
+window.addEventListener("blur",function(){
+	time(1);
+});
+window.addEventListener("focus",function(){
+	time();
+});
+</script>
+</html>
