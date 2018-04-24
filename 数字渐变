@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<!-- <script src="./echarts.js"></script> -->
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+</head>
+<body>
+	<div id="ele">
+		<input v-model.number="number" type="number" name="">
+		<p>{{finallyNumber}}</p>
+	</div>
+</body>
+	<script type="text/javascript">
+		var vm = new Vue({
+			el: '#ele',
+			computed: {
+				finallyNumber () {
+					if (this.interimVal !== Math.floor(this.interimVal)) {
+						return this.interimVal.toFixed(2);
+					}
+					return this.interimVal.toFixed(0);
+				}
+			},
+			data () {
+				return {
+					number: 0,
+					interimVal: 0,
+					timer: ''
+				}
+			},
+			methods: {
+				interim (from, time, to) {
+					var difference = Math.abs(from - to);
+					var step = difference / (time * 1000) * 17;
+					window.cancelAnimationFrame(this.timer);
+					var jump = (start, end, step) => {
+						if (start === end) return;
+						let d = start + step > end ? end : start + step;
+						if (start > end) {
+							d = start - step > end ? start - step : end;
+						}
+						this.interimVal = d;
+						this.timer = window.requestAnimationFrame(() => jump(d, end, step));
+					}
+					jump(from, to, step);
+				}
+			},
+			created () {
+				if (!window.requestAnimationFrame) {
+					window.requestAnimationFrame =
+						window.webkitRequestAnimationFrame ||
+						window.mozRequestAnimationFrame ||
+						window.msRequestAnimationFrame ||
+						(callback => window.setTimeout(callback, 1000 / 60))
+				}
+				if (!window.cancelAnimationFrame) {
+					window.cancelAnimationFrame =
+						window.webkitCancelAnimationFrame || window.webkitCancelRequestAnimtionFrame ||
+						window.mozCancelAnimationFrame || window.mozCancelRequestAnimationFrame ||
+						window.msCancelAnimationFrame || window.msCancelRequestAnimationFrame ||
+						(callback => clearTimeout(callback))
+				}
+			},
+			watch: {
+				number (newVal) {
+					this.interim(this.interimVal, .5, newVal)
+				}
+			}
+		})
+	</script>
+</html>
